@@ -1,20 +1,27 @@
 package server
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	
+
+	"github.com/Semerokozlyat/honeypotter/internal/config"
 	"github.com/Semerokozlyat/honeypotter/internal/handler/httphandler"
 )
 
 type HTTPServer struct {
-	router *gin.Engine
+	httpServer *http.Server
 
-	addr string
+	httpRequestRepo HTTPRequestsRepo
 }
 
-func NewHTTPServer() *HTTPServer {
+type HTTPRequestsRepo interface {
+	CreateHTTPRequest(ctx context.Context) error
+}
+
+func NewHTTPServer(cfg *config.HTTPServer, httpRequestRepo HTTPRequestsRepo) *HTTPServer {
 	ginEngine := gin.New()
 	ginEngine.Use(gin.Logger())
 	ginEngine.Use(gin.Recovery())
@@ -23,10 +30,17 @@ func NewHTTPServer() *HTTPServer {
 	apiV1.GET("/status", httphandler.StatusHandler)
 
 	return &HTTPServer{
-		router: ginEngine,
+		httpServer: &http.Server{
+			Addr:           cfg.Address,
+			Handler:        ginEngine,
+			ReadTimeout:    30 * time.Second,
+			WriteTimeout:   30 * time.Second,
+			MaxHeaderBytes: 10 * 1024 * 1024 * 1024,
+		},
+		httpRequestRepo: httpRequestRepo,
 	}
 }
 
 func (srv *HTTPServer) Run() error {
-	return http.ListenAndServe(srv.addr, srv.router)
+	return srv.httpServer.ListenAndServe()
 }
