@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -42,5 +43,6 @@ func NewHTTPServer(cfg *config.HTTPServer, httpRequestRepo HTTPRequestsRepo) *HT
 }
 
 func (srv *HTTPServer) Run() error {
+	log.Println("running HTTP server")
 	return srv.httpServer.ListenAndServe()
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"sync"
+
 	"github.com/Semerokozlyat/honeypotter/internal"
 	"github.com/Semerokozlyat/honeypotter/internal/config"
 )
@@ -15,9 +17,11 @@ func main() {
 		app.Stop()
 	}()
 
-	if err = app.Start(); err != nil {
+	var wg sync.WaitGroup
+	if err = app.Start(&wg); err != nil {
 		panic("start app: " + err.Error())
 	}
+	wg.Wait()
 }
 
 func loadConfig() (cfg *config.Config) {
@@ -27,6 +31,9 @@ func loadConfig() (cfg *config.Config) {
 		},
 		Database: config.Database{
 			URL: "",
+		},
+		PacketCapturer: config.PacketCapturer{
+			InterfaceName: "lo0",
 		},
 	}
 	return cfg

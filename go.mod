@@ -4,6 +4,7 @@ go 1.23.2
 
 require (
 	github.com/gin-gonic/gin v1.10.1
+	github.com/google/gopacket v1.1.19
 	github.com/jackc/pgx/v5 v5.7.5
 )
 

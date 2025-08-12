@@ -1,8 +1,9 @@
 package config
 
 type Config struct {
-	HTTPServer HTTPServer ``
-	Database   Database
+	HTTPServer     HTTPServer
+	PacketCapturer PacketCapturer
+	Database       Database
 }
 
 type HTTPServer struct {
@@ -11,4 +12,8 @@ type HTTPServer struct {
 
 type Database struct {
 	URL string
+}
+
+type PacketCapturer struct {
+	InterfaceName string
 }
