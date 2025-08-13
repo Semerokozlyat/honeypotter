@@ -21,7 +21,7 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 docker-build:
-	docker build -t $(APP_NAME) -f deployments/docker/Dockerfile .
+	docker build -t $(APP_NAME) -f deployment/docker/Dockerfile .
 
 lint:
 	golangci-lint run
