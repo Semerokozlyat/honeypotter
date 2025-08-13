@@ -1,12 +1,11 @@
 # Multi-stage build with minimal Rocky Linux
-FROM --platform=linux/amd64 golang:1.23 AS builder
+FROM rockylinux:9 AS builder
 
 # Install build dependencies
-RUN apt-get update -y && \
-    apt-get install -y build-essential && \
-    apt-get install -y wget git libpcap0.8-dev && \
-    apt-get install -y gcc-x86-64-linux-gnu g++-x86-64-linux-gnu libc6-dev-amd64-cross && \
-    apt-get clean all
+RUN dnf update -y && \
+    dnf groupinstall -y "Development Tools" && \
+    dnf install -y wget git libpcap && \
+    dnf clean all
 
 # Install Go
 ENV GO_VERSION=1.23.2
@@ -15,7 +14,6 @@ RUN wget https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz && \
     rm go${GO_VERSION}.linux-amd64.tar.gz
 
 ENV PATH="/usr/local/go/bin:${PATH}"
-ENV CC=x86_64-linux-gnu-gcc
 ENV CGO_ENABLED=1
 ENV GOOS=linux
 ENV GOARCH=amd64
@@ -31,7 +29,7 @@ COPY ../../../. .
 
 # Build with optimizations
 RUN go build \
-    #-ldflags='-w -s -extldflags "-static"' \
+    -ldflags='-w -s -extldflags "-static"' \
     -a -installsuffix cgo \
     -o app ./cmd/honeypotter/.
 
