@@ -1,0 +1,33 @@
+openapi: 3.0.3
+info:
+  title: Service API
+  description: API description.
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080
+paths:
+  /v1/status:
+    get:
+      summary: Server status
+      description: Returns current server status for availability checks.
+      responses:
+        '200':
+          description: Empty response with 200 OK code.
+  /v1/infrastructure:
+    get:
+      summary: Infrastructure components.
+      description: Returns status of infrastructure components.
+      responses:
+        '200':
+          description: Response with actual infrastructure components status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InfrastructureResponse'
+components:
+  schemas:
+    InfrastructureResponse:
+      type: object
+      properties:
+        status:
+          type: string

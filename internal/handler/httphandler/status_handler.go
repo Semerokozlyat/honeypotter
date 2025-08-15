@@ -1,7 +1,11 @@
 package httphandler
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func StatusHandler(ginCtx *gin.Context) {
-
+	ginCtx.Status(http.StatusOK)
 }

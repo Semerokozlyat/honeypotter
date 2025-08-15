@@ -29,6 +29,7 @@ func NewHTTPServer(cfg *config.HTTPServer, httpRequestRepo HTTPRequestsRepo) *HT
 
 	apiV1 := ginEngine.Group("/v1")
 	apiV1.GET("/status", httphandler.StatusHandler)
+	apiV1.GET("/infrastructure", httphandler.InfrastructureHandler)
 
 	return &HTTPServer{
 		httpServer: &http.Server{
